@@ -1,0 +1,79 @@
+<div class="container">
+  <div *ngIf="loading" class="text-center my-5">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Carregando...</span>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && post">
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Post</li>
+      </ol>
+    </nav>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h1 class="card-title mb-3">{{ post.title | titlecase }}</h1>
+
+        <div class="mb-4" *ngIf="author">
+          <div class="d-flex align-items-center mb-3">
+            <div
+              class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2 initial-name"
+            >
+              {{ author.name?.charAt(0) }}
+            </div>
+            <div>
+              <p class="mb-0">
+                Por
+                <a [routerLink]="['/author', author.id]">{{ author.name }}</a>
+              </p>
+              <small class="text-muted">{{ author.email }}</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="post-content mb-4">
+          <p class="lead">{{ post.body }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-light">
+        <h3 class="mb-0">Comentários ({{ comments.length }})</h3>
+      </div>
+      <div class="card-body">
+        <app-comment-form
+          [postId]="post.id"
+          (commentAdded)="onCommentAdded($event)"
+        ></app-comment-form>
+
+        <hr class="my-4" />
+
+        <div *ngIf="comments.length === 0" class="text-center py-3">
+          <p class="text-muted">
+            Nenhum comentário ainda. Seja o primeiro a comentar!
+          </p>
+        </div>
+
+        <div class="comment-list">
+          <div *ngFor="let comment of comments" class="card mb-3">
+            <div class="card-body">
+              <div class="d-flex justify-content-between mb-2">
+                <h5 class="card-title mb-0">{{ comment.name }}</h5>
+                <small class="text-muted">{{ comment.email }}</small>
+              </div>
+              <p class="card-text">{{ comment.body }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !post" class="alert alert-danger">
+    Post não encontrado.
+  </div>
+</div>

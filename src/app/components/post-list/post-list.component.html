@@ -1,0 +1,117 @@
+<div class="container">
+  <div class="row mb-4">
+    <div class="col-md-6 mb-3 mb-md-0">
+      <h2>Posts Recentes</h2>
+    </div>
+    <div class="col-md-6">
+      <div class="input-group">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Buscar posts..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()"
+        />
+        <button
+          class="btn btn-outline-secondary"
+          type="button"
+          (click)="clearSearch()"
+        >
+          Limpar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="text-center my-5">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Carregando...</span>
+    </div>
+  </div>
+
+  <!-- Grid View -->
+  <div
+    class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"
+    *ngIf="!loading && viewMode === 'grid'"
+  >
+    <div class="col" *ngFor="let post of posts">
+      <div class="card h-100 shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">{{ post.title | titlecase }}</h5>
+          <p class="card-text">{{ post.body.slice(0, 100) }}...</p>
+        </div>
+        <div class="card-footer bg-transparent">
+          <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted" *ngIf="userMap[post.userId]">
+              Por
+              <a [routerLink]="['/author', post.userId]">{{
+                userMap[post.userId].name
+              }}</a>
+            </small>
+            <a [routerLink]="['/post', post.id]" class="btn btn-sm btn-primary"
+              >Ler mais</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- List View -->
+  <div class="list-group" *ngIf="!loading && viewMode === 'list'">
+    <div
+      class="list-group-item list-group-item-action"
+      *ngFor="let post of posts"
+    >
+      <div class="d-flex w-100 justify-content-between">
+        <h5 class="mb-1">{{ post.title | titlecase }}</h5>
+        <small *ngIf="userMap[post.userId]">
+          Por
+          <a [routerLink]="['/author', post.userId]">{{
+            userMap[post.userId].name
+          }}</a>
+        </small>
+      </div>
+      <p class="mb-1">{{ post.body.slice(0, 150) }}...</p>
+      <a [routerLink]="['/post', post.id]" class="btn btn-sm btn-primary mt-2"
+        >Ler mais</a
+      >
+    </div>
+  </div>
+
+  <div class="row mt-4 mb-3">
+    <div class="col-md-6">
+      <div class="btn-group" role="group" aria-label="View toggle">
+        <button
+          type="button"
+          class="btn"
+          [class.btn-primary]="viewMode === 'grid'"
+          [class.btn-outline-primary]="viewMode !== 'grid'"
+          (click)="viewMode = 'grid'"
+        >
+          Grid
+        </button>
+        <button
+          type="button"
+          class="btn"
+          [class.btn-primary]="viewMode === 'list'"
+          [class.btn-outline-primary]="viewMode !== 'list'"
+          (click)="viewMode = 'list'"
+        >
+          Lista
+        </button>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <app-pagination
+        [currentPage]="currentPage"
+        [totalPages]="totalPages"
+        (pageChanged)="onPageChange($event)"
+      ></app-pagination>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && posts.length === 0" class="alert alert-info">
+    Nenhum post encontrado.
+  </div>
+</div>

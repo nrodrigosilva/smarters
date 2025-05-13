@@ -1,0 +1,72 @@
+<div class="card mb-4">
+  <div class="card-body">
+    <h5 class="card-title mb-3">Deixe um comentário</h5>
+
+    <form [formGroup]="commentForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="name" class="form-label">Nome</label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          formControlName="name"
+          [class.is-invalid]="isInvalid('name')"
+        />
+        <div class="invalid-feedback" *ngIf="isInvalid('name')">
+          Nome é obrigatório.
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          formControlName="email"
+          [class.is-invalid]="isInvalid('email')"
+        />
+        <div class="invalid-feedback" *ngIf="isInvalid('email')">
+          <span *ngIf="commentForm.get('email')?.errors?.['required']">
+            E-mail é obrigatório.
+          </span>
+          <span *ngIf="commentForm.get('email')?.errors?.['email']">
+            Formato de e-mail inválido.
+          </span>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="body" class="form-label">Comentário</label>
+        <textarea
+          class="form-control"
+          id="body"
+          rows="3"
+          formControlName="body"
+          [class.is-invalid]="isInvalid('body')"
+        ></textarea>
+        <div class="invalid-feedback" *ngIf="isInvalid('body')">
+          Comentário é obrigatório.
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="commentForm.invalid || submitting"
+      >
+        <span
+          *ngIf="submitting"
+          class="spinner-border spinner-border-sm me-2"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        Enviar Comentário
+      </button>
+    </form>
+
+    <div *ngIf="success" class="alert alert-success mt-3">
+      Comentário enviado com sucesso!
+    </div>
+  </div>
+</div>
